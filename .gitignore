@@ -5,7 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
-
+data/*.csv
+scripts/*.zip
+.conda
 # Distribution / packaging
 .Python
 build/
