@@ -32,18 +32,5 @@ def data_items():
     item_properties_part1 = pd.read_csv('../../data/item_properties_part1.csv')
     item_properties_part2 = pd.read_csv('../../data/item_properties_part2.csv')
 
-    # Afficher les premières lignes de chaque DataFrame pour inspection
-    print("Category Tree:")
-    print(category_tree.head())
 
-    print("\n Events:")
-    print(events.head())
-
-    print("\n Item Properties Part 1:")
-    print(item_properties_part1.head())
-
-    print("\n Item Properties Part 2:")
-    print(item_properties_part2.head())
-
-
-1
+    return category_tree, events, item_properties_part1, item_properties_part2
