@@ -6,27 +6,43 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Importer la classe Dataset
 from data import Dataset
+from data import DataProcessing
+from data import DataAnalystic
 
 def main():
-    dataset = Dataset()
+    print ("demarrage du programme...")
+    print ("====================================")
+    print ("=====================================")
+    print ("=====================================")
+    print("telechargement des données...")
     
+    # Initialiser la classe Dataset
+    dataset = Dataset()
+
     # Télécharger et extraire les données
     dataset.data_downloads()
-    
+
     # Charger les données
-    category_tree, events, item_properties_part1, item_properties_part2 = dataset.data_items()
+    datasets = dataset.data_items()
 
-    # Afficher un aperçu des données
-      # Afficher les premières lignes de chaque DataFrame pour inspection
- 
-    print(f" Category Tree:\n {category_tree.head()}")
+    processor = DataProcessing(datasets)
+    processor.clean_data()
+    processed_data = processor.get_processed_data()
 
-  
-    print(f" \n Events: \n{events.head()}")
+    print("\nDonnées après traitement :")
+    print(f"category_tree :\n{processed_data['category_tree'].info()} \n")
+    print(f"events :\n{processed_data['events'].head()}\n")
+    print(f"item_properties_part1 :\n{processed_data['item_properties_part1'].head()}\n")
+    print(f"item_properties_part2 :\n{processed_data['item_properties_part2'].head()}\n")
 
-    print(f"\n Item Properties Part 1: \n{item_properties_part1.head()}")
 
-    print(f"\n Item Properties Part 2: \n{item_properties_part2.head()}")
+#   # Initialiser la classe DataAnalystic
+    analystic = DataAnalystic()
+
+    # Analyser les données
+    analystic.analyze_events()
+
+
 
 if __name__ == "__main__":
     main()
