@@ -26,6 +26,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.zip
 MANIFEST
 
 # PyInstaller
@@ -171,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+data/raw/*.csv
+data/processed/*.csv
+data/experiments/*.csv
+data/*.csv
