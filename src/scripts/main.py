@@ -40,7 +40,7 @@ def main():
     analystic = DataAnalystic()
 
     # Analyser les données
-    analystic.analyze_events()
+    analystic.run_all_analyses()
 
 
 
