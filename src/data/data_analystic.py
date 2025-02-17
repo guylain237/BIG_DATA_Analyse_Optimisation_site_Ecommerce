@@ -38,21 +38,54 @@ class DataAnalystic:
     def analyze_events(self):
         print("Analyse du fichier events...")
         events = self.datasets['events']
-        items_properties = self.datasets['item_properties_combined']
-        
-        events = events[events.itemid.isin(items_properties.itemid.unique())]
-        
-        event_attributes = events.groupby("event").size()
-        print(f"size_event : \n \n{event_attributes}")
-
-        event_attributes.to_csv("../data/event_attributes.csv",index=True)
-        print("📁 Le fichier 'event_attributess.csv' a été créé avec succès !")
+        item_properties = self.datasets['item_properties_combined']
         
         # Statistiques descriptives de base
         print("Statistiques descriptives :\n", events.describe())
+        # filtrer les items id qui sont presents dans events et item_properties
+        events = events[events['itemid'].isin(item_properties['itemid'])]
+        #  selectionne des valeurs unique d'event
+        event_attributes = events.groupby("event").size()
+        print(f"size_event : \n \n{event_attributes}")
+        
+        #  creation d'un fichier csv pour la visualization des données
+        event_attributes.to_csv("data/experiments/event_attributes.csv",index=True)
+        print("📁 Le fichier 'event_attributess.csv' a été créé avec succès !")
+       
+       #  selectionne des valeurs unique d'event 
+        event_view = events[events["event"]=="view"]
+        event_addtocart = events[events["event"]=="addtocart"]
+        event_transaction = events[events["event"]=="transaction"]
+        print(f"selection_event view: \n\n{event_view}")
+        print(f"selection_event addtocart: \n\n{event_addtocart}")
+        print(f"selection_event transaction: \n\n{event_transaction}")
+        
+        #  Analyse des événements pour comprendre le comportement utilisateur et calculer le taux de conversion
+
+        #  Identifier les utilisateurs ayant ajouté un produit au panier
+        user_addtocart = event_addtocart["visitorid"].unique()
+        print(f"utilisateurs qui ont ajoute un produit au panier: \n\n{user_addtocart}")
+
+        #  Identifier les utilisateurs ayant vue des produits sans ajouté  au panier
+        
+        user_view_only = event_view[~event_view['visitorid'].isin(user_addtocart)]['visitorid'].unique()
+        print(f"Utilisateurs ayant vu des produits sans ajouter au panier : \n\n{user_view_only}")
 
 
-    
+        #  Calculer le taux de conversion pour les deux groupes
+        conv_addtocart = event_transaction[event_transaction["visitorid"].isin(user_addtocart)]["visitorid"].nunique()/len(user_addtocart)
+
+        conv_view_only = event_transaction[event_transaction["visitorid"].isin(user_view_only)]["visitorid"].nunique()/len(user_view_only)
+       
+        # Affichage des résultats
+        print(f"Taux de conversion des utilisateurs ayant ajouté un produit au panier : {conv_addtocart:.2%}")
+        print(f"Taux de conversion des utilisateurs ayant seulement vu des produits : {conv_view_only:.2%}")
+        
+        #  creation d'un fichier csv pour la visualization des données
+        data = { conv_addtocart * 100, conv_view_only * 100}
+        conversion_usere = pd.DataFrame(data, index=["panier", "vue"])
+        conversion_usere.to_csv("data/processed/conversion_user.csv",index=True)
+        print("📁 Le fichier 'conversion_user.csv' a été créé avec succès !")
 
     def analyze_item_properties_combined(self):
         print("Analyse du fichier item_properties_combined...")
